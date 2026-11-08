@@ -33,7 +33,7 @@ XCOM_TRANSFORMED_KEY = "transformed_exchange_rates"
 XCOM_LOAD_SUMMARY_KEY = "load_summary"
 
 default_args = {
-    "owner": "your_name",
+    "owner": "sikander_atif_arain",
     "retries": 2,
     "retry_delay": timedelta(minutes=2),
 }

@@ -23,7 +23,7 @@ services:
       project: "currency-etl"
       component: "database"
       description: "MongoDB storing daily currency exchange rates"
-      maintainer: "Your Name"
+      maintainer: "Sikander Atif Arain"
 
   mongo-express:
     image: mongo-express:1.0.2
@@ -46,7 +46,7 @@ services:
       project: "currency-etl"
       component: "db-admin-ui"
       description: "Mongo Express web UI for MongoDB"
-      maintainer: "Your Name"
+      maintainer: "Sikander Atif Arain"
 
 volumes:
   mongo_data:
