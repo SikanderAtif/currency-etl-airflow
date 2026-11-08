@@ -1,0 +1,61 @@
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: currency_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: currency_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db              # persistent storage for the database
+      - mongo_config:/data/configdb      # persistent storage for config
+    networks:
+      - airflow                          # same network as the Airflow containers
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      project: "currency-etl"
+      component: "database"
+      description: "MongoDB storing daily currency exchange rates"
+      maintainer: "Your Name"
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: currency_mongo_express
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    ports:
+      - "8082:8081"                      # host 8082 -> container 8081
+    networks:
+      - airflow
+    labels:
+      project: "currency-etl"
+      component: "db-admin-ui"
+      description: "Mongo Express web UI for MongoDB"
+      maintainer: "Your Name"
+
+volumes:
+  mongo_data:
+    labels:
+      project: "currency-etl"
+  mongo_config:
+    labels:
+      project: "currency-etl"
+
+networks:
+  airflow:
+    driver: bridge
